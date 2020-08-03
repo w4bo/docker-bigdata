@@ -1,0 +1,65 @@
+version: "3"
+
+
+services:
+  cdh:
+    build: cdh
+    depends_on:
+      - mysql-db
+    ports:
+      - 7180:7180
+      - 7182:7182
+
+  mysql-db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'scm'
+      # So you don't have to use root, but you can if you like
+      MYSQL_USER: 'scm'
+      # You can use whatever password you like
+      MYSQL_PASSWORD: 'password'
+      # Password for root access
+      MYSQL_ROOT_PASSWORD: 'password'
+    ports:
+      # <Port exposed> : < MySQL Port running inside container>
+      - '3307:3306'
+    expose:
+      # Opens port 3306 on the container
+      - '3306'
+    # Where our data will be persisted
+    volumes:
+      - ./mysql/database-data:/var/lib/mysql
+ 
+        # postgres-db:
+        #   image: postgres # use latest official postgres version
+        #   ports:
+        #     - 5432:5432
+        #   env_file:
+        #     - postgres/database.env # configure postgres
+        #   volumes:
+        #     - ./postgres/database-data:/var/lib/postgresql/data/ # persist data even if container shuts down
+        #   networks:
+        #     - postgres
+
+        # pgadmin:
+        #   container_name: pgadmin_container
+        #   image: dpage/pgadmin4
+        #   environment:
+        #     PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-foo@example.com}
+        #     PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+        #   volumes:
+        #     - ./pgadmin/pgadmin:/root/.pgadmin
+        #   ports:
+        #     - 5050:80
+        #   networks:
+        #     - postgres
+
+        # networks:
+        #  postgres:
+        #    driver: bridge
+
+
+
+# volumes:
+  # database-data: postgres/database-data # named volumes can be managed easier using docker-compose
