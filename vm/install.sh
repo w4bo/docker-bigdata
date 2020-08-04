@@ -45,6 +45,8 @@ sudo mysql -u root < mysql/config.sql
 # #############################################################################
 # Enable CDH
 # sudo rm -r /etc/apt/sources.list.d/*
+# sudo wget -q https://archive.cloudera.com/cm6/6.3.1/ubuntu1804/apt/cloudera-manager.list -P /etc/apt/sources.list.d
+# sudo wget -q https://archive.cloudera.com/cm6/6.3.1/ubuntu1804/apt/archive.key -O - | sudo apt-key add - 
 sudo wget -q ${CLOUDERA_BASE_URL}/cloudera-manager.list -P /etc/apt/sources.list.d
 sudo wget -q ${CLOUDERA_BASE_URL}/archive.key -O - | sudo apt-key add - 
 sudo rm -rf /var/lib/apt/lists/*
@@ -71,5 +73,5 @@ sudo systemctl enable --now ssh
 sudo service cloudera-scm-server start
 # Check the logs here!!!
 # sudo tail -f /var/log/cloudera-scm-agent/cloudera-scm-agent.log
-# sudo tail -f /var/log/cloudera-scm-server/cloudera-scm-server.log
+sudo tail -f /var/log/cloudera-scm-server/cloudera-scm-server.log
 
