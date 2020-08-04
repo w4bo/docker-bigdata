@@ -1,4 +1,6 @@
 #!/bin/sh
+set -e # exit on error
+
 CM_MAJOR_VERSION=6
 CM_MINOR_VERSION=3
 CM_PATCH_VERSION=1
@@ -6,17 +8,25 @@ CM_VERSION=${CM_MAJOR_VERSION}.${CM_MINOR_VERSION}.${CM_PATCH_VERSION}
 CLOUDERA_BASE_URL=https://archive.cloudera.com/cm${CM_MAJOR_VERSION}/${CM_VERSION}/ubuntu1804/apt/
 
 # Add user to sudoers (required by cloudera manager)
-sudo cp /etc/sudoers.orig /etc/sudoers
+sudo rm /etc/sudoers.d/bigdata
 echo "bigdata ALL=(ALL) NOPASSWD: ALL" | sudo tee -a /etc/sudoers.d/bigdata
 
 # #############################################################################
+# Setup clouder package
+sudo rm /etc/apt/sources.list.d/* || true
+# sudo wget -q https://archive.cloudera.com/cm6/6.3.1/ubuntu1804/apt/cloudera-manager.list -P /etc/apt/sources.list.d
+# sudo wget -q https://archive.cloudera.com/cm6/6.3.1/ubuntu1804/apt/archive.key -O - | sudo apt-key add - 
+sudo wget -q ${CLOUDERA_BASE_URL}/cloudera-manager.list -P /etc/apt/sources.list.d
+sudo wget -q ${CLOUDERA_BASE_URL}/archive.key -O - | sudo apt-key add - 
+sudo rm -rf /var/lib/apt/lists/*
+# End - Setup cloudera package
+# #############################################################################
+
+
+# #############################################################################
 # Install required packages
-sudo apt update
-sudo apt install --yes \
-        wget gnupg2 ca-certificates vim ntp git \  # installing some utilities
-        net-utils \                                # installing some utilities
-        oracle-j2sdk1.8 \                          # installing java (error with openjdk-8-jdk)
-	mysql-server libmysql-java mysql-workbench # installing mysql and java connector
+sudo apt update && sudo apt upgrade --yes
+sudo apt install --yes wget gnupg2 ca-certificates vim ntp git oracle-j2sdk1.8 mysql-server libmysql-java mysql-workbench
 # End - Install
 # #############################################################################
 
@@ -43,14 +53,7 @@ sudo mysql -u root < mysql/config.sql
 # #############################################################################
 
 # #############################################################################
-# Enable CDH
-# sudo rm -r /etc/apt/sources.list.d/*
-# sudo wget -q https://archive.cloudera.com/cm6/6.3.1/ubuntu1804/apt/cloudera-manager.list -P /etc/apt/sources.list.d
-# sudo wget -q https://archive.cloudera.com/cm6/6.3.1/ubuntu1804/apt/archive.key -O - | sudo apt-key add - 
-sudo wget -q ${CLOUDERA_BASE_URL}/cloudera-manager.list -P /etc/apt/sources.list.d
-sudo wget -q ${CLOUDERA_BASE_URL}/archive.key -O - | sudo apt-key add - 
-sudo rm -rf /var/lib/apt/lists/*
-# Install cloudera-manager-{server,daemons,agent}
+# Enable CDH - Install cloudera-manager-{server,daemons,agent}
 sudo apt update
 sudo apt install --yes cloudera-manager-daemons cloudera-manager-agent cloudera-manager-server
 sudo rm -rf /var/lib/apt/lists/*
@@ -62,6 +65,7 @@ sudo ufw allow 7182
 
 # #############################################################################
 # Enable SSH
+sudo apt update
 sudo apt install -y openssh-server
 sudo ufw allow ssh
 sudo systemctl enable --now ssh
@@ -73,5 +77,6 @@ sudo systemctl enable --now ssh
 sudo service cloudera-scm-server start
 # Check the logs here!!!
 # sudo tail -f /var/log/cloudera-scm-agent/cloudera-scm-agent.log
+sleep 15
 sudo tail -f /var/log/cloudera-scm-server/cloudera-scm-server.log
 
