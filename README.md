@@ -16,9 +16,10 @@ In case VM tools is not working after install `sudo systemctl restart open-vm-to
 
 ## Docker image for travis
 
-  apt install --yes rubygems build-essential ruby-full git
-  git clone GIT_REPO
-  cd REPO_FOLDER/
-  travis login --pro
-  travis encrypt --pro 
-  travis lint --pro .travis.yml
+    apt update && apt install --yes rubygems build-essential ruby-full git
+    gem install travis
+    git clone GIT_REPO
+    cd REPO_FOLDER/
+    travis login --pro
+    travis encrypt --pro 
+    travis lint --pro .travis.yml
