@@ -13,3 +13,12 @@ On Windows
 - Enabling VMWare `bcdedit /set hypervisorlaunchtype off`
 
 In case VM tools is not working after install `sudo systemctl restart open-vm-tools.service`
+
+## Docker image for travis
+
+  apt install --yes rubygems build-essential ruby-full git
+  git clone GIT_REPO
+  cd REPO_FOLDER/
+  travis login --pro
+  travis encrypt --pro 
+  travis lint --pro .travis.yml
