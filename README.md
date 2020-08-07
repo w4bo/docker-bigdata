@@ -27,7 +27,9 @@ In summary:
 
 ## Docker image for travis
 
-    apt update && apt install --yes rubygems build-essential ruby-full git
+    apt update && apt install --yes rubygems build-essential ruby-full git perl wget vim
+    git config --global user.email "m.francia@unibo.it"
+    git config --global user.name "w4bo"
     gem install travis
     git clone GIT_REPO
     cd REPO_FOLDER/
