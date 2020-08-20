@@ -27,7 +27,8 @@ In summary:
 
 ## Docker image for travis
 
-    apt update && apt install --yes rubygems build-essential ruby-full git perl wget vim
+    apt update && apt install --yes rubygems build-essential ruby-full git perl wget vim curl
+    curl -sL https://github.com/shyiko/jabba/raw/master/install.sh | bash && . ~/.jabba/jabba.sh
     git config --global user.email "m.francia@unibo.it"
     git config --global user.name "w4bo"
     gem install travis
